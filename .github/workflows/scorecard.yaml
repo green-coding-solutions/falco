@@ -23,19 +23,7 @@ on:
   push:
     branches: [ "master" ]
 
-permissions:
-  actions: read
-  checks: read
-  contents: read
-  deployments: read
-  issues: read
-  discussions: read
-  packages: read
-  pages: read
-  pull-requests: write
-  repository-projects: read
-  security-events: read
-  statuses: read
+permissions: read-all
 
 jobs:
   analysis:
@@ -49,6 +37,7 @@ jobs:
       # Uncomment the permissions below if installing in a private repository.
       # contents: read
       # actions: read
+      pull-requests: write
 
     steps:
 
