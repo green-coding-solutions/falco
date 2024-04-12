@@ -23,19 +23,7 @@ on:
   push:
     branches: [ "master" ]
 
-permissions:
-  actions: read
-  checks: read
-  contents: read
-  deployments: read
-  issues: read
-  discussions: read
-  packages: read
-  pages: read
-  pull-requests: write
-  repository-projects: read
-  security-events: read
-  statuses: read
+permissions: read-all
 
 jobs:
   analysis:
@@ -49,6 +37,7 @@ jobs:
       # Uncomment the permissions below if installing in a private repository.
       # contents: read
       # actions: read
+      pull-requests: write
 
     steps:
 
@@ -56,6 +45,8 @@ jobs:
         uses: green-coding-solutions/eco-ci-energy-estimation@main
         with:
           task: start-measurement
+        continue-on-error: true
+
 
       - name: "Checkout code"
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
@@ -67,6 +58,8 @@ jobs:
         with:
           task: get-measurement
           label: Checkout code
+        continue-on-error: true
+
 
       - name: "Run analysis"
         uses: ossf/scorecard-action@e38b1902ae4f44df626f11ba0734b14fb91f8f86 # v2.1.2
@@ -93,6 +86,8 @@ jobs:
         with:
           task: get-measurement
           label: Run analysis
+        continue-on-error: true
+
 
 
       # Upload the results as artifacts (optional). Commenting out will disable uploads of run results in SARIF
@@ -109,6 +104,8 @@ jobs:
         with:
           task: get-measurement
           label: Upload artifact
+        continue-on-error: true
+
 
 
       # Upload the results to GitHub's code scanning dashboard.
@@ -122,6 +119,8 @@ jobs:
         with:
           task: get-measurement
           label: Upload to code-scanning
+        continue-on-error: true
+
 
 
       - name: Eco CI Energy Estimation - End Measurement
@@ -129,4 +128,6 @@ jobs:
         with:
           task: display-results
           pr-comment: true
+        continue-on-error: true
+
 
