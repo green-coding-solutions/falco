@@ -10,6 +10,7 @@ on:
     # Weekly on Mondays at 00:00.
     - cron: '0 0 * * 1'
 
+
   # The OSSF recommendation encourages to enable branch protection rules trigger
   # to update the scorecard
   # (https://github.com/ossf/scorecard/blob/main/docs/checks.md#branch-protection)
@@ -37,10 +38,24 @@ jobs:
       # actions: read
 
     steps:
+
+      - name: Eco CI Energy Estimation - Initialize
+        uses: green-coding-solutions/eco-ci-energy-estimation@86f1b2ee12db687bca0d15160a529bb64a7b60d9 # v4.0.0
+        with:
+          task: start-measurement
+        continue-on-error: true
+
       - name: "Checkout code"
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
         with:
           persist-credentials: false
+
+      - name: Eco CI Energy Estimation - Get Measurement
+        uses: green-coding-solutions/eco-ci-energy-estimation@86f1b2ee12db687bca0d15160a529bb64a7b60d9 # v4.0.0
+        with:
+          task: get-measurement
+          label: Checkout code
+        continue-on-error: true
 
       - name: "Run analysis"
         uses: ossf/scorecard-action@0864cf19026789058feabb7e87baa5f140aac736 # v2.3.1
@@ -62,6 +77,14 @@ jobs:
           #     of the value entered here.
           publish_results: true
 
+      - name: Eco CI Energy Estimation - Get Measurement
+        uses: green-coding-solutions/eco-ci-energy-estimation@86f1b2ee12db687bca0d15160a529bb64a7b60d9 # v4.0.0
+        with:
+          task: get-measurement
+          label: Run analysis
+        continue-on-error: true
+
+
       # Upload the results as artifacts (optional). Commenting out will disable uploads of run results in SARIF
       # format to the repository Actions tab.
       - name: "Upload artifact"
@@ -71,9 +94,32 @@ jobs:
           path: results.sarif
           retention-days: 5
 
+      - name: Eco CI Energy Estimation - Get Measurement
+        uses: green-coding-solutions/eco-ci-energy-estimation@86f1b2ee12db687bca0d15160a529bb64a7b60d9 # v4.0.0
+        with:
+          task: get-measurement
+          label: Upload artifact
+        continue-on-error: true
+
+
       # Upload the results to GitHub's code scanning dashboard.
       - name: "Upload to code-scanning"
         uses: github/codeql-action/upload-sarif@17573ee1cc1b9d061760f3a006fc4aac4f944fd5 # v2.2.4
         with:
           sarif_file: results.sarif
+
+      - name: Eco CI Energy Estimation - Get Measurement
+        uses: green-coding-solutions/eco-ci-energy-estimation@86f1b2ee12db687bca0d15160a529bb64a7b60d9 # v4.0.0
+        with:
+          task: get-measurement
+          label: Upload to code-scanning
+        continue-on-error: true
+
+
+      - name: Eco CI Energy Estimation - End Measurement
+        uses: green-coding-solutions/eco-ci-energy-estimation@86f1b2ee12db687bca0d15160a529bb64a7b60d9 # v4.0.0
+        with:
+          task: display-results
+          pr-comment: false
+        continue-on-error: true
 
